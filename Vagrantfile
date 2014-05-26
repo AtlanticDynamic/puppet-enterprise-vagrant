@@ -35,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #puppet.manifest_file = "master.pp"
     #end
     #master.vm.provision :shell, :path => "pe-install/bootstrap.sh"
-    master.vm.provision :shell, :inline => "sudo bash -c '/vagrant/pe-install/bootstrap.sh  /vagrant/pe-install/master/answers.lastrun.puppet'"
+    master.vm.provision :shell, :inline => "sudo bash -c '/vagrant/pe-install/bootstrap.sh  /vagrant/pe-install/answers.lastrun.puppet'"
     master.vm.hostname = "puppet"
   end
 
