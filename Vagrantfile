@@ -8,7 +8,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # This is from http://puppet-vagrant-boxes.puppetlabs.com/
-  config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-64-x64-fusion503-nocm.box"
+  config.vm.provider :vmware_fusion do |v, override|
+    override.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-64-x64-fusion503-nocm.box"
+  end
+
+  config.vm.provider "virtualbox" do |v, override|
+    override.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-64-x64-vbox4210-nocm.box"
+  end
   
   # Update /etc/hosts on all active machines.
   config.hostmanager.enabled = true
@@ -36,10 +42,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #end
     #master.vm.provision :shell, :path => "pe-install/bootstrap.sh"
     master.vm.provision :shell, :inline => "sudo bash -c '/vagrant/pe-install/bootstrap.sh  /vagrant/pe-install/answers.lastrun.puppet'"
+    master.vm.provision :shell, :inline => "sudo puppet resource ini_setting autosign path=/etc/puppetlabs/puppet/puppet.conf section=master setting=autosign value=true"
     master.vm.hostname = "puppet"
   end
 
   config.vm.define :agent do |agent|
+    agent.vm.provision :shell, :inline => "sudo bash -c '/vagrant/pe-install/bootstrap.sh  /vagrant/pe-install/answers.lastrun.node1'"
     agent.vm.hostname = "node1"
   end
 
