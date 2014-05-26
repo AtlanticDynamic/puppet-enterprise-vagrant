@@ -42,4 +42,4 @@ q_puppetmaster_enterpriseconsole_hostname=localhost
 q_puppetmaster_enterpriseconsole_port=443
 q_puppetmaster_install=y
 q_run_updtvpkg=n
-q_vendor_packages_install=n
+q_vendor_packages_install=y

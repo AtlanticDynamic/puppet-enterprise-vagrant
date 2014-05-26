@@ -11,4 +11,4 @@ q_puppetca_install=n
 q_puppetdb_install=n
 q_puppetmaster_install=n
 q_run_updtvpkg=n
-q_vendor_packages_install=n
+q_vendor_packages_install=y
