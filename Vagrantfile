@@ -12,7 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   
   # Update /etc/hosts on all active machines.
   config.hostmanager.enabled = true
-  config.hostmanager.manage_host = true
+  #config.hostmanager.manage_host = true
 
 
   # Every Vagrant virtual environment requires a box to build off of.
