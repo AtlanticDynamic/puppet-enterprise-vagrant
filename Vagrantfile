@@ -4,26 +4,23 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
+# the prefix of the pe install tar, minus the .tar.gz
+PUPPET_ENTERPRISE_VERSION = "puppet-enterprise-3.2.3-el-6-x86_64"
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # This is from http://puppet-vagrant-boxes.puppetlabs.com/
   config.vm.provider :vmware_fusion do |v, override|
+    override.vm.box = "centos-64-x64-fusion503-nocm"
     override.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-64-x64-fusion503-nocm.box"
   end
 
   config.vm.provider "virtualbox" do |v, override|
+    override.vm.box = "centos-64-x64-vbox4210-nocm.box"
     override.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-64-x64-vbox4210-nocm.box"
   end
   
-  # Update /etc/hosts on all active machines.
-  config.hostmanager.enabled = true
-  #config.hostmanager.manage_host = true
-
-
-  # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "centos-64-x64-fusion503-nocm"
-
   # If true, then any SSH connections made will enable agent forwarding.
   # Default value: false
   config.ssh.forward_agent = true
@@ -32,23 +29,30 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :inline => "sudo service iptables stop"
   config.vm.provision :shell, :inline => "sudo chkconfig iptables off"
 
-  # manage /etc/hosts
-  config.vm.provision :hostmanager
+  if Vagrant.has_plugin?("vagrant-hostmanager")
+    # Update /etc/hosts on all active machines.
+    config.hostmanager.enabled = true
+
+    # manage /etc/hosts
+    config.vm.provision :hostmanager
+  else
+    abort("Please install the hostmanager vagrant plugin: vagrant plugin install vagrant-hostmanager")
+  end
 
   config.vm.define :master do |master|
     #master.vm.provision "puppet" do |puppet|
     #puppet.manifests_path = "puppet"
     #puppet.manifest_file = "master.pp"
     #end
-    #master.vm.provision :shell, :path => "pe-install/bootstrap.sh"
-    master.vm.provision :shell, :inline => "sudo bash -c '/vagrant/pe-install/bootstrap.sh  /vagrant/pe-install/answers.lastrun.puppet'"
-    master.vm.provision :shell, :inline => "sudo puppet resource ini_setting autosign path=/etc/puppetlabs/puppet/puppet.conf section=master setting=autosign value=true"
+    master.vm.provision :shell, :inline => "sudo bash -c '/vagrant/pe-install/bootstrap.sh #{PUPPET_ENTERPRISE_VERSION} /vagrant/pe-install/answers.lastrun.puppet'"
+    master.vm.provision :shell, :inline => "sudo /opt/puppet/bin/puppet resource ini_setting autosign path=/etc/puppetlabs/puppet/puppet.conf section=master setting=autosign value=true"
     master.vm.hostname = "puppet"
   end
 
   config.vm.define :agent do |agent|
-    agent.vm.provision :shell, :inline => "sudo bash -c '/vagrant/pe-install/bootstrap.sh  /vagrant/pe-install/answers.lastrun.node1'"
+    agent.vm.provision :shell, :inline => "sudo bash -c '/vagrant/pe-install/bootstrap.sh #{PUPPET_ENTERPRISE_VERSION} /vagrant/pe-install/answers.lastrun.node1'"
     agent.vm.hostname = "node1"
+    agent.vm.provision :shell, :inline => "sudo /opt/puppet/bin/puppet agent -t"
   end
 
   
