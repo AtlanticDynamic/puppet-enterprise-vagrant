@@ -44,6 +44,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #puppet.manifests_path = "puppet"
     #puppet.manifest_file = "master.pp"
     #end
+    master.vm.provider "vmware_fusion" do |v, override|
+      v.vmx["memsize"]  = "1536"
+    end
     master.vm.provision :shell, :inline => "sudo bash -c '/vagrant/pe-install/bootstrap.sh #{PUPPET_ENTERPRISE_VERSION} /vagrant/pe-install/answers.lastrun.puppet'"
     master.vm.provision :shell, :inline => "sudo /opt/puppet/bin/puppet apply /vagrant/pe-install/autosign.pp"
     master.vm.hostname = "puppet"
