@@ -1,3 +1,4 @@
 puppet-enterprise-*
 *.swp
 .vagrant/*
+.DS_Store
