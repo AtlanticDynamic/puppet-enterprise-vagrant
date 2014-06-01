@@ -20,7 +20,7 @@ fi
 if [ ! -f $INSTALL_SOURCE ]
 then
   echo "File not found: $INSTALL_SOURCE"
-  echo "Please download download Puppet Enterprise x64 for CentOS 6."
+  echo "Please download Puppet Enterprise x64 for CentOS 6."
   exit 1
 fi
 
