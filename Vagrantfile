@@ -45,7 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #puppet.manifest_file = "master.pp"
     #end
     master.vm.provision :shell, :inline => "sudo bash -c '/vagrant/pe-install/bootstrap.sh #{PUPPET_ENTERPRISE_VERSION} /vagrant/pe-install/answers.lastrun.puppet'"
-    master.vm.provision :shell, :inline => "sudo /opt/puppet/bin/puppet resource ini_setting autosign path=/etc/puppetlabs/puppet/puppet.conf section=master setting=autosign value=true"
+    master.vm.provision :shell, :inline => "sudo /opt/puppet/bin/puppet apply /vagrant/pe-install/autosign.pp"
     master.vm.hostname = "puppet"
   end
 
